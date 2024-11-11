@@ -1,0 +1,18 @@
+[project]
+name = "gelatoformatter"
+version = "1.0.0"
+authors = [
+  { name="Gabriel Finneran", email="gabriel.finneran@ucdconnect.ie" },
+]
+description = "A package for formatting text spectra before use with the GELATO supernova tool."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/GabrielF98/gelatoformatter"
+Issues = "https://github.com/GabrielF98/gelatoformatter/issues"
