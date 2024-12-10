@@ -108,12 +108,13 @@ def run_rescaler(filename, *args, **kwargs):
 
             # Save
             np.savetxt(
-                os.path.basename(filename)
+                os.path.splitext(filename)[0]
                 + "_"
                 + str(epoch)
                 + "_days_rescaled.txt",
                 data,
                 fmt="%1.2f %1.7e",
+                delimiter="\t",
             )
 
 
