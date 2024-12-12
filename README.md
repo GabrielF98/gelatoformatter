@@ -68,10 +68,10 @@ python rescale.py --filename exampledata/SN2020bvc_Spectra_Master.txt --timecol=
 ```
 
 ## Sources of example files
-Files in the [exampledata/](https://github.com/GabrielF98/gelatoformatter/tree/first-release/exampledata) folder are taken from TNS and GRBSN.
+Files in the [exampledata/](https://github.com/GabrielF98/gelatoformatter/tree/main/exampledata) folder are taken from TNS and GRBSN.
 
-[SN2020bvc_Spectra_Master.txt](https://github.com/GabrielF98/gelatoformatter/blob/first-release/exampledata/SN2020bvc_Spectra_Master.txt) -> https://grbsn.watchertelescope.ie/SN2020bvc
+[SN2020bvc_Spectra_Master.txt](https://github.com/GabrielF98/gelatoformatter/tree/main/exampledata) -> https://grbsn.watchertelescope.ie/SN2020bvc
 
 
-[tns_2020bvc_2020-02-05_13-08-02_FTN_FLOYDS-N_Global_SN_Project.ascii](https://github.com/GabrielF98/gelatoformatter/blob/first-release/exampledata/tns_2020bvc_2020-02-05_13-08-02_FTN_FLOYDS-N_Global_SN_Project.ascii) -> https://www.wis-tns.org/object/2020bvc
+[tns_2020bvc_2020-02-05_13-08-02_FTN_FLOYDS-N_Global_SN_Project.ascii](https://github.com/GabrielF98/gelatoformatter/tree/main/exampledata) -> https://www.wis-tns.org/object/2020bvc
 
