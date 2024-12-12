@@ -14,7 +14,7 @@ MAX_WAVELENGTH = 9000
 
 
 def load_spectrum(
-    filename, wave_col=0, flux_col=1, time_col=None, *args, **kwargs
+    filename, *args, wave_col=0, flux_col=1, time_col=None, **kwargs
 ):
     """
     Load a spectrum from a file.
@@ -23,7 +23,8 @@ def load_spectrum(
 
     wave_col - The index of the wavelength column.
     flux_col - The index of the flux column.
-    time_col - The index of any elapsed time column in the file, useful if there are multiple epochs in one file.
+    time_col - The index of any elapsed time column in the file,
+               useful if there are multiple epochs in one file.
     """
 
     if time_col is None:
@@ -58,10 +59,16 @@ def trim_spectrum(wave, flux):
 
 
 def rescale_spectrum(wave, flux):
-    # Calculate the min delta for the wavelengths. Make an array where all wavelengths have this diff.
-    min_diff = min(np.diff(wave))
+    """
+    Rescale the spectrum onto a new wavelength axis. Compute the flux in these new bins.
 
-    # Rescale the data with 1d interpolation.
+    Procedure:
+
+    - Calculate the min delta for the wavelengths. Round to 2 d.p.
+    - Make an array where all wavelengths have this diff.
+    - Rescale the flux data onto this wavelength array with 1d interpolation.
+    """
+    min_diff = round(min(np.diff(wave)), 2)
     rescaled_wavelength = np.arange(wave[0], wave[-1], min_diff)
     rescaled_flux = interp1d(wave, flux)(rescaled_wavelength)
 
@@ -69,6 +76,21 @@ def rescale_spectrum(wave, flux):
 
 
 def run_rescaler(filename, *args, **kwargs):
+    """
+    Run all of the above functions to return the rescaled spectrum.
+
+    Procedure:
+
+    - Load input spectrum from a file.
+    - Loop over epochs (if there are any).
+    - Trim spectra.
+    - Rescale the wavelength and re-bin the flux.
+    - Stack the output into a 2-D array.
+    - Save this array, appending _rescaled to the filename
+      (and the epoch if there are multiple epochs).
+
+    Rescaled spectrum has evenly spaced wavelength bins.
+    """
 
     wavelengths, fluxes, times = load_spectrum(
         filename=filename, *args, **kwargs
@@ -84,15 +106,15 @@ def run_rescaler(filename, *args, **kwargs):
 
         # Save
         np.savetxt(
-            os.path.basename(filename) + "_rescaled.txt",
+            os.path.splitext(filename)[0] + "_rescaled.txt",
             data,
             fmt="%1.2f %1.7e",
+            delimiter="\t",
         )
 
     # Select the spectra by epoch. This handles the case where one file contains many spectra.
     else:
-        epochs = np.unique(times[~np.isnan(times)])
-        # Loop over epochs.
+        epochs = np.unique(times)
         for epoch in epochs:
             epoch_indices = np.where(times == epoch)[0]
             wave = wavelengths[epoch_indices]
@@ -110,7 +132,7 @@ def run_rescaler(filename, *args, **kwargs):
             np.savetxt(
                 os.path.splitext(filename)[0]
                 + "_"
-                + str(epoch)
+                + str(round(epoch, 2))
                 + "_days_rescaled.txt",
                 data,
                 fmt="%1.2f %1.7e",
@@ -145,15 +167,28 @@ if __name__ == "__main__":
         "--timecol",
         type=int,
         default=None,
-        help="Index of the column in the file which has the elapsed time since explosion, if there is one. This is useful if you have multiple spectra for the same event in one file.",
+        help="Index of the column in the file which has the elapsed time since explosion. \
+                This is useful if you have multiple spectra for the same event in one file.",
     )
     parser.add_argument(
-        "--delim", default="\t", type=str, help="File delimiter (tab/other)"
+        "--delim",
+        default=",",
+        type=str,
+        help="File delimiter (tab/comma/space etc.)",
+    )
+    parser.add_argument(
+        "--hdr",
+        default=0,
+        type=int,
+        help="Number of header lines in your file. These will be skipped.",
     )
     args = parser.parse_args()
+
     run_rescaler(
         filename=args.filename,
         wave_col=args.wavecol,
         flux_col=args.fluxcol,
         time_col=args.timecol,
+        skip_header=args.hdr,
+        delimiter=args.delim,
     )
